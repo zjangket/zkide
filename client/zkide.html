@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="zkide.css"/>
+    <link rel="stylesheet" type="text/css" href="codemirror.css"/>
+    
+     <script src="codemirror_patched.js"></script>
+    
+    <script src="tools.js"></script>
+    <script src="zkide.js"></script>
+    
+    <script>
+    function start() {
+        Apart.require(["ZKIDE"], function(ZKIDE) {
+            ZKIDE.start();
+        });
+    }
+    </script>
+    <title>ZKIDE</title>
+</head>
+<body onload="start()">
+    <h1>ZKIDE</h1>
+    <div id='fileBrowser'></div>
+</body>
+</html>
