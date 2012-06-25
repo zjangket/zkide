@@ -6,7 +6,10 @@ Apart.define("fileStore", function() {
             xhr.open("GET", path);
             xhr.onreadystatechange = function() {
                 if (xhr.readyState != 4)  { return; }
-                callback(null, xhr.responseText);
+                var metaData = {
+                    "contentType":  xhr.getResponseHeader("Content-Type")
+                };
+                callback(null, xhr.responseText, metaData);
            };
             xhr.send(null);
         }
@@ -20,6 +23,8 @@ Apart.define("fileStore", function() {
                 callback(error, jsonResult);
             });
         };
+        
+        fileStore.get = get;
                 
         fileStore.getContent = function (path, callback) {
             get(path, callback);

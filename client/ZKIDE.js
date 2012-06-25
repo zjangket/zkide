@@ -22,6 +22,10 @@ Apart.define("ZKIDE", ['ZKEditor', 'fileStore'], function(ZKEditor, fileStore) {
 	ZKIDE.listDirectoryAtIn = function listDirectoryAtIn(path, domNode) {
 	    fileStore.getMetaData(path, function(error, dirContents)  {
 	            //TODO: do something with error
+	            ulChildren = domNode.getElementsByTagName('ul');
+	            for (var i = 0; ulChildren.length; i++) {
+	                domNode.removeChild(ulChildren[i]);
+	            }
 	            var ul = document.createElement('ul');
 	            domNode.appendChild(ul);
 	            dirContents.forEach(function(dirElement) {

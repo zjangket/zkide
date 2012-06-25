@@ -130,7 +130,7 @@ function process(request, response) {
     
             send_headers(200, {
                 'Content-Length': stats.size, 
-                'Content-Type': mime.mapExtension(filePath),
+                'Content-Type': mime.contentTypeForExtension(filePath),
                 'Last-Modified': stats.mtime
             });
             util.pump(readStream, response, function() {

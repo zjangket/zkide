@@ -6,12 +6,12 @@ mapping = {
     ".html": 'text/html',
     ".jpg"    :  'image/jpeg',
     ".jpeg"    :  'image/jpeg',
-    ".js"    :  'application/javascript',
+    ".js"    :  'text/javascript',
     ".png"    :  'image/png',
     ".txt"    :  'text/plain',
     ".xml"    :  'text/xml'
 };
 
-exports.mapExtension = function(aString) {
+exports.contentTypeForExtension = function(aString) {
     return mapping[path.extname(aString)] || 'text/html';
 }

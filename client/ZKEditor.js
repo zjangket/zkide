@@ -11,7 +11,10 @@ Apart.define("ZKEditor", ['fileStore'], function(fileStore) {
                 browserWindow.document.title = path;            
                 if (path) {
                     url = path;
-                    fileStore.getContent(url, function (error, fileContent) {
+                    fileStore.get(url, function (error, fileContent, metaData) {
+                            if (metaData && metaData.contentType) {
+                                editor.setOption('mode', metaData.contentType);
+                            }
                             editor.setValue(fileContent);
                     });
                 }     
