@@ -62,14 +62,16 @@ function process(request, response) {
                 return internal_server_err(err);
             }           
             
-            util.pump(request, writeStream, function() {
+            
+            request.pipe(writeStream);
+            request.on('end', function() {
                     util.print('wrote: ',filePath, '\n');
-                     send_headers(200, {
+                     send_headers(204, {
                              'Content-Length': 0, 
                      });
-                     response.end('');
-                     writeStream.destroy();
+                     response.end();
             });
+            
             response.addListener('error', function (err) {
                 util.print('error writing',filePath,util.inspect(err));
                 writeStream.destroy();
@@ -113,7 +115,7 @@ function process(request, response) {
                     if (request.method != 'HEAD') {
                         response.end(body, 'utf-8');
                     } else {
-                        response.end('');
+                        response.end();
                     }
                 });
             });
@@ -132,18 +134,19 @@ function process(request, response) {
                 'Content-Length': stats.size, 
                 'Content-Type': mime.contentTypeForExtension(filePath),
                 'Last-Modified': stats.mtime
-            });
-            util.pump(readStream, response, function() {
-                    util.print('pumped: ',filePath, '\n');
+            }); 
+            readStream.pipe(response);
+            readStream.on('end', function() {
+                    util.print('served: ',filePath, '\n');
             });
     
-            request.connection.addListener('timeout', function() {
-                /* dont destroy it when the fd's already closed */
+            /*request.connection.addListener('timeout', function() {
+                // dont destroy it when the fd's already closed
                 if (readStream.readable) {
                     util.print('timed out. destroying file read stream');
                     readStream.destroy();
                 }
-            });
+            });*/
     
             readStream.addListener('fd', function(fd) {
                 util.print("opened",filePath,"on fd",fd);
@@ -151,7 +154,7 @@ function process(request, response) {
     
             readStream.addListener('error', function (err) {
                 util.print('error reading',filePath,util.inspect(err));
-                response.end('');
+                response.end();
                 readStream.destroy();
             });
         }

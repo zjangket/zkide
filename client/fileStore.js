@@ -24,6 +24,18 @@ Apart.define("fileStore", function() {
             });
         };
         
+        function put(path, content, callback) {
+            var xhr = new XMLHttpRequest();
+            xhr.open("PUT", path);
+            xhr.setRequestHeader("Cache-Control", "no-cache");
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState != 4)  { return; }
+                var result = xhr.responseText;
+	            callback();
+	        };
+	        xhr.send(content);
+	    }
+
         fileStore.get = get;
                 
         fileStore.getContent = function (path, callback) {
@@ -32,6 +44,10 @@ Apart.define("fileStore", function() {
                 
         fileStore.getMetaData = function(path, callback) {
             getAsJSON(path, callback);
+        };
+        
+        fileStore.save = function(path, content, callback) {
+            put(path, content, callback);
         }
         
         return fileStore;

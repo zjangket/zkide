@@ -49,15 +49,8 @@ Apart.define("ZKIDE", ['ZKEditor', 'fileStore'], function(ZKEditor, fileStore) {
 	    });
 	};
 	
-	ZKIDE.put = function put(path, content, callback) {
-	     var xhr = new XMLHttpRequest();
-	    xhr.open("PUT", path);
-	    xhr.onreadystatechange = function() {
-	        if (xhr.readyState != 4)  { return; }
-	        var result = xhr.responseText;
-	        callback();
-	    };
-	    xhr.send(content);
+	ZKIDE.getEditors = function getEditors(path, content, callback) {
+	     return editors;
 	}
 	
 	
