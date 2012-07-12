@@ -1,5 +1,15 @@
 body {
   font-family: Droid Sans, Arial, sans-serif;
 }
+a {    
+  color:  #616D7E;
+}
 
+.directory {
+  list-style-image: url(folder.gif);
+}
 
+.file {  
+  list-style-type: none;
+  list-style-image: none;   
+}

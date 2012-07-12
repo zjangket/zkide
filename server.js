@@ -22,6 +22,9 @@ function process(request, response) {
         case "PUT":
             processPut();
             break;
+        case "DELETE":
+            processDelete();
+            break;
     }
         
     function send_headers(httpstatus, headers) {
@@ -49,20 +52,54 @@ function process(request, response) {
         return_error(404, "not found");
     }       
         
-    function internal_server_err() {
+    function internal_server_err(err) {
         return_error(500, " resulted in error:" + err);
     }
 
-    function processPut() {
-        try {
-                var writeStream = fs.createWriteStream(filePath);
-            } 
-            catch (err) {
-                util.print("fs.createWriteStream(",filePath,") error: ",util.inspect(err,true));
-                return internal_server_err(err);
-            }           
-            
-            
+    function processDelete() {        
+        if(filePath.match(/\/$/)) {
+            fs.rmdir(filePath, reportResult);
+        } else {
+            fs.unlink(filePath, reportResult);
+        }
+        function reportResult(error) {
+            if (!error)  {
+                send_headers(200, {
+                     'Content-Length': 0, 
+                });
+                response.end();
+           } else {
+               internal_server_err(error)
+           }
+        }
+    }
+
+    function processPut() {        
+        if(filePath.match(/\/$/)) {
+            mkdir();
+        } else {
+            writeFile();
+        }
+        
+        function mkdir() {
+            fs.mkdir(filePath, function() {
+                    util.print('created dir: ',filePath, '\n');
+                     send_headers(204, {
+                             'Content-Length': 0, 
+                     });
+                     response.end();
+            });
+        }
+        
+        function writeFile() {
+            try {
+                    var writeStream = fs.createWriteStream(filePath);
+                } 
+                catch (err) {
+                    util.print("fs.createWriteStream(",filePath,") error: ",util.inspect(err,true));
+                    return internal_server_err(err);
+                } 
+                
             request.pipe(writeStream);
             request.on('end', function() {
                     util.print('wrote: ',filePath, '\n');
@@ -76,6 +113,7 @@ function process(request, response) {
                 util.print('error writing',filePath,util.inspect(err));
                 writeStream.destroy();
             });
+        }
     }
     
     function processGet() {
@@ -87,6 +125,7 @@ function process(request, response) {
             fs.readdir(filePath, function(error, fileArray) {
                 async.forEach(fileArray, function(x, callback) {
                     var newPath = path.join(filePath, x);
+                    var newPathUrl = '/' + newPath;
                     var isDirectory = false;
                      fs.stat(newPath, function (err, stats) {
                         if (err) {
@@ -101,7 +140,7 @@ function process(request, response) {
                         }
                     listing.push( 
                         {"name": x,
-                            "url": newPath,
+                            "url": newPathUrl,
                         "isDirectory": isDirectory});
                      callback();
                      });

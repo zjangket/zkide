@@ -1,11 +1,12 @@
-Apart.define("ZKEditor", ['fileStore'], function(fileStore) {
+Apart.define("ZKEditor", ['ZKIDE', 'fileStore'], function(ZKIDE, fileStore) {
         
         var codeMirrorConfiguration= {
             lineNumbers: true,
             keyMap: "zkide"
         };
         
-        function ZKEditor(path) {        
+        function ZKEditor(path) {
+            ZKIDE.editorOpened(this);
             function initializeCodeMirrorEditor(zkeditor, domId) {
                 var domElement = zkeditor.browserWindow.document.getElementById(domId);            
                 var editor = CodeMirror.fromTextArea(domElement, codeMirrorConfiguration);

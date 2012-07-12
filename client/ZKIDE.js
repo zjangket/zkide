@@ -1,58 +1,23 @@
-Apart.define("ZKIDE", ['ZKEditor', 'fileStore'], function(ZKEditor, fileStore) {
+Apart.define("ZKIDE", function() {
     var ZKIDE = {};
     var console;
     var editors = [];
+    var fileBrowsers = [];
     
     ZKIDE.start = function start() {
-        /*var editor = CodeMirror.fromTextArea(document.getElementById("zkTextarea"), {
-			lineNumbers: true});
-		editors.push(editor);*/
-		ZKIDE.listDirectoryAtIn(workingDirectory(),  document.getElementById('fileBrowser'));
 	};
 	
-	function workingDirectory() {
-	    //we are in the client subdir now
-	    return "/";
+	ZKIDE.fileBrowserOpened = function (browser) {
+	    fileBrowsers.push(browser);
 	}
 	
-	ZKIDE.open = function open(path) {
-	    editors.push(new ZKEditor(path));
-	}	
-	
-	ZKIDE.listDirectoryAtIn = function listDirectoryAtIn(path, domNode) {
-	    fileStore.getMetaData(path, function(error, dirContents)  {
-	            //TODO: do something with error
-	            ulChildren = domNode.getElementsByTagName('ul');
-	            for (var i = 0; ulChildren.length; i++) {
-	                domNode.removeChild(ulChildren[i]);
-	            }
-	            var ul = document.createElement('ul');
-	            domNode.appendChild(ul);
-	            dirContents.forEach(function(dirElement) {
-	                    var li = document.createElement('li');
-	                    var a = document.createElement('a');
-	                    a.setAttribute('href', '#');
-	                    if (dirElement.isDirectory) {
-	                        a.onclick = function() {
-	                            ZKIDE.listDirectoryAtIn(workingDirectory() + dirElement.url, li);
-	                        };
-	                    } else {
-	                        a.onclick = function() {
-	                            ZKIDE.open(workingDirectory() + dirElement.url);
-	                        };
-	                    }
-	                    var aText = document.createTextNode(dirElement.name);
-	                    a.appendChild(aText);
-	                    li.appendChild(a);
-	                    ul.appendChild(li);                 
-	            });
-	    });
-	};
+	ZKIDE.editorOpened = function (editor) {
+	    editors.push(editor);
+	}
 	
 	ZKIDE.getEditors = function getEditors(path, content, callback) {
 	     return editors;
-	}
-	
+	}	
 	
 	return ZKIDE;
 });
