@@ -15,18 +15,16 @@
     function start() {
         Apart.require(["ZKEditorKeyBindings", "ZKIDE"], function(keyBindings, ZKIDE) {
             ZKIDE.start();
-        });   
+        }); 
         
-        Apart.require(["ZKFileBrowser"], function(ZKFileBrowser) {
-            var fileBrowser = new ZKFileBrowser(document.getElementById("fileBrowser"));
-            fileBrowser.listDirectory('/');
+        Apart.require(["ZKFileBrowser"], function(fb) {
+            fb('/', document.getElementById("fileBrowser"));
         });
     }
     </script>
     <title>ZKIDE</title>
 </head>
 <body onload="start()">
-    <menu id='mainMenu'></menu>
-    <div id='fileBrowser'></div>
+    <div id="fileBrowser"></div>
 </body>
 </html>

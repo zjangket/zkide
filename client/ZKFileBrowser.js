@@ -1,51 +1,91 @@
-Apart.define('ZKFileBrowser', ['ZKIDE', 'fileStore', 'ZKEditor'], function(ZKIDE, fileStore, ZKEditor) {
-        function ZKFileBrowser(aDomElement) {
-            ZKIDE.fileBrowserOpened(this);
-            this.domElement = aDomElement;
+Apart.define('ZKFileBrowser', ['raw@ZKFileBrowser.html', 'ZKIDE', 'fileStore', 'ZKEditor'], function(template, ZKIDE, fileStore, ZKEditor) {        
+        var fileBrowserTemplate;
+        var dirTemplateNode;
+        var fileTemplateNode;
+        
+        var fb = function(aPath, aDomElement) {
+            var doc = aDomElement.ownerDocument;
+            if(fileBrowserTemplate === undefined) {
+                aDomElement.innerHTML = template; 
+                dirTemplateNode = doc.getElementById('directoryTemplate', aDomElement);
+                dirTemplateNode.removeAttribute('id');
+                fileTemplateNode = doc.getElementById('fileTemplate', aDomElement);
+                fileTemplateNode.removeAttribute('id');
+                doc.getElementById('fileBrowserDiv', aDomElement).innerHTML = '';
+                fileBrowserTemplate = doc.getElementById('fileBrowserSection', aDomElement);
+                aDomElement.innerHTML = '';
+            }
+            var newFileBrowserSection = fileBrowserTemplate.cloneNode(true);
+            aDomElement.appendChild(newFileBrowserSection);
+            listDirectoryAtIn(aPath, doc.getElementById('fileBrowserDiv', aDomElement));
+        };
+        
+        function doAddFile() {
+            buttonNode = node.getElementsByTagName('button')[0];
+            buttonNode.onclick = function() {
+                var pathToCreate = domElement.ownerDocument.defaultView.prompt(
+                    'Enter the path to create', dirElement.url); 
+            }
         }
         
-        ZKFileBrowser.prototype.getDocument = function() {
-            return this.domElement.ownerDocument;
-        };
+        function toggleSelectedClass(anEvent) {
+            var element = anEvent.target;
+            var classesString = element.getAttribute('class');
+            var classes;
+            if (classesString) {
+                classes = classesString.split(/\s+/);
+            } else {
+                classes = [];
+            }
+            var i = classes.indexOf('selected');
+            var result;
+            if (i > -1) {
+                classes = classes.filter(function(x) {
+                        return x != "selected";
+                });
+            } else {
+                classes.push('selected');
+            }
+            element.setAttribute('class', classes.join(', '));
+        }
         
-        ZKFileBrowser.prototype.listDirectory = function(aPath) {
-            return this.listDirectoryAtIn(aPath, this.domElement) ;
-        };
-        
-        ZKFileBrowser.prototype.listDirectoryAtIn = function (path, domElement) {
+        function listDirectoryAtIn (path, domElement) {            
             var childLists = domElement.getElementsByTagName('ul');
-            if (childLists.length > 0) {
-                domElement.removeChild(childLists[0]);
+            if (childLists !== undefined && (childLists.length > 0)) {
+                var ulChild = childLists[0];
+                ulChild.parentNode.removeChild(ulChild);
                 return;
             }
     
-            var ul = this.getDocument().createElement('ul');
+            var ul = domElement.ownerDocument.createElement('ul');
             domElement.appendChild(ul);
-            var self = this;
             fileStore.getMetaData(path, function(error, dirContents)  {
                     //TODO: do something with error
                     dirContents.forEach(function(dirElement) {
-                            var li = self.getDocument().createElement('li');
-                            var style = dirElement.isDirectory ? 'directory' : 'file';
-                            li.setAttribute('class', style);
-                            var a = self.getDocument().createElement('a');
-                            a.setAttribute('href', '#');
+                            var node;
                             if (dirElement.isDirectory) {
-                                a.onclick = function() {
-                                    self.listDirectoryAtIn(dirElement.url, li);
-                                };
+                                node = dirTemplateNode.cloneNode(true);
+                                spanNode = node.getElementsByTagName('span')[0]; 
+                                spanNode.innerHTML = dirElement.name;
+                                spanNode.onclick = function(event) {
+                                    toggleSelectedClass(event);
+                                    listDirectoryAtIn(dirElement.url, node);
+                                }; 
                             } else {
-                                a.onclick = function() {
+                                node = fileTemplateNode.cloneNode(true);
+                                spanNode = node.getElementsByTagName('span')[0];   
+                                spanNode.innerHTML = dirElement.name;
+                                spanNode.onclick = function(event) {
+                                    toggleSelectedClass(event);
+                                };
+                                spanNode.ondblclick = function() {
                                     new ZKEditor(dirElement.url);
                                 };
                             }
-                            var aText = self.getDocument().createTextNode(dirElement.name);
-                            a.appendChild(aText);
-                            li.appendChild(a);
-                            ul.appendChild(li);                 
+                            ul.appendChild(node);                 
                     });
             });
 	};
         
-        return ZKFileBrowser;
+        return fb;
 });

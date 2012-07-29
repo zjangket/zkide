@@ -1,0 +1,18 @@
+<html>
+<head>
+    <title>ZKFileBrowser template</title>
+</head>
+<body>
+<section id='fileBrowserSection' contextMenu='fileBrowserContextMenu'>
+    <menu type='context' id='fileBrowserContextMenu'>
+        <menuitem label="Add file" onclick="window.location.reload();" icon="/client/add.png"></menuitem>
+    </menu>
+    <div id='fileBrowserDiv'>
+      <ul id='fileBrowserUl'>/
+           <li id='directoryTemplate' class='directory'><span></span></li>
+           <li id="fileTemplate" class='file'><span></span></li>
+      </ul>
+    </div>
+</section>
+</body>
+</html>

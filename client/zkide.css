@@ -1,15 +1,29 @@
 body {
   font-family: Droid Sans, Arial, sans-serif;
-}
-a {    
-  color:  #616D7E;
+  font-size: medium;
+  color:  #202040;
 }
 
 .directory {
-  list-style-image: url(folder.gif);
+  list-style-image: url(folder16.gif);
 }
 
 .file {  
   list-style-type: none;
   list-style-image: none;   
+}
+
+.selected {
+    background-color: #E0F0F0;
+}
+
+button {
+    /*background-image: url(/images/buttons/add.png); 16px x 16px */
+    background-color: transparent;
+    background-repeat: no-repeat;
+    border: none;
+    cursor: pointer;        /* make the cursor like hovering over an <a> element */
+    height: 16px;
+    /*padding-left: 16px;      make text start to the right of the image */
+    vertical-align: middle; /* align the text vertically centered */
 }

@@ -67,29 +67,36 @@ exports.Async = Async;
 
 (function() {
     var Apart = {};
+    Apart.root = "";
     var loadingModules = Apart.loadingModules = {};
     var loadedModules = Apart.loadedModules = {};
         
     function load(aDependency, finishedCallback) {
+        var isRaw = /^raw@/.test(aDependency);
+        if (isRaw) {
+            aDependency = aDependency.substr(4);
+        }
         if (loadedModules[aDependency] !== undefined) {
-            finishedCallback(null,loadedModules[aDependency]);
+            finishedCallback(null, loadedModules[aDependency]);
             return;
         }
-        if (loadingModules[aDependency] === undefined) { 
-            loadingModules[aDependency] = finishedCallback;
-            var s = window.document.createElement('script');
-            if (Apart.root) {
-               s.src = Apart.root + aDependency + '.js'; 
-            } else {
-                s.src = aDependency + '.js';
-            }
-            window.document.head.appendChild(s);
-        } else {
+        if (loadingModules[aDependency] !== undefined) {
             var tmp = loadingModules[aDependency];
             loadingModules[aDependency] = function(error, mappingResult) {
                 tmp(error, mappingResult);
                 finishedCallback(error, mappingResult);
             };
+        } else {
+            if (!isRaw) {
+                loadingModules[aDependency] = finishedCallback;
+                var s = window.document.createElement('script');
+                s.src = Apart.root + aDependency + '.js';
+                window.document.head.appendChild(s);
+            } else {
+                rawLoad(Apart.root + aDependency, function (error, result) {
+                        finishedCallback(error, result);
+                });
+            }
         }
     }
     
@@ -123,6 +130,16 @@ exports.Async = Async;
             }
             callback.apply(this, deps);
         });
+    }
+    
+    function rawLoad(path, callback) {
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", path);
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState != 4)  { return; }
+            callback(null, xhr.responseText, xhr);
+       };
+        xhr.send(null);
     }
     
     Apart.define = define;
