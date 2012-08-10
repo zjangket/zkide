@@ -5,6 +5,7 @@ var uri = require('url');
 var util = require('util');
 var mime = require('./mime');
 var async = require('./server/async.min.js');
+var repl = require("repl");
 
 var defaults = {
     port: 9090
@@ -124,7 +125,7 @@ function process(request, response) {
             //TODO: do something with error
             fs.readdir(filePath, function(error, fileArray) {
                 async.forEach(fileArray, function(x, callback) {
-                    var newPath = path.join(filePath, x);
+                    var newPath = filePath + '/' + x;
                     var newPathUrl = '/' + newPath;
                     var isDirectory = false;
                      fs.stat(newPath, function (err, stats) {
@@ -221,3 +222,5 @@ function process(request, response) {
   
 var server = http.createServer(process);
 server.listen(defaults.port);
+repl.start();
+

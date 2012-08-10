@@ -13,6 +13,12 @@ body {
   list-style-image: none;   
 }
 
+.unselectable    {
+    -webkit-user-select: none; /* webkit (safari, chrome) browsers */
+    -moz-user-select: none;  /* mozilla browsers */
+    -khtml-user-select: none;  /* webkit (konqueror) browsers */
+}
+
 .selected {
     background-color: #E0F0F0;
 }

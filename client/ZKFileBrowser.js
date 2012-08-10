@@ -67,21 +67,20 @@ Apart.define('ZKFileBrowser', ['raw@ZKFileBrowser.html', 'ZKIDE', 'fileStore', '
                                 node = dirTemplateNode.cloneNode(true);
                                 spanNode = node.getElementsByTagName('span')[0]; 
                                 spanNode.innerHTML = dirElement.name;
-                                spanNode.onclick = function(event) {
-                                    toggleSelectedClass(event);
+                                spanNode.ondblclick = function(event) {
                                     listDirectoryAtIn(dirElement.url, node);
                                 }; 
                             } else {
                                 node = fileTemplateNode.cloneNode(true);
                                 spanNode = node.getElementsByTagName('span')[0];   
                                 spanNode.innerHTML = dirElement.name;
-                                spanNode.onclick = function(event) {
-                                    toggleSelectedClass(event);
-                                };
                                 spanNode.ondblclick = function() {
                                     new ZKEditor(dirElement.url);
                                 };
                             }
+                            spanNode.onclick = function(event) {
+                                toggleSelectedClass(event);
+                            };
                             ul.appendChild(node);                 
                     });
             });
