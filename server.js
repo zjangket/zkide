@@ -13,7 +13,8 @@ var defaults = {
     
 function process(request, response) {    
     var url = uri.parse(request.url);
-    var filePath = "." + (url.pathname || '/');
+    var filePath = url.pathname.substring(1); //strip leading slash
+    if ( filePath.length == 0) filePath = '.';
     util.print(request.method + ": " + url.path + "\n");
     
     switch (request.method) {
@@ -125,8 +126,7 @@ function process(request, response) {
             //TODO: do something with error
             fs.readdir(filePath, function(error, fileArray) {
                 async.forEach(fileArray, function(x, callback) {
-                    var newPath = filePath + '/' + x;
-                    var newPathUrl = '/' + newPath;
+                    var newPath = filePath+ x;
                     var isDirectory = false;
                      fs.stat(newPath, function (err, stats) {
                         if (err) {
@@ -138,10 +138,13 @@ function process(request, response) {
                         }
                         if (stats.isDirectory()) {
                             isDirectory = true;
+                            if ( newPath.charAt(newPath.length - 1) != '/') {
+                                newPath = newPath + '/';
+                            }
                         }
                     listing.push( 
                         {"name": x,
-                            "url": newPathUrl,
+                            "url": '/' + newPath,
                         "isDirectory": isDirectory});
                      callback();
                      });
@@ -208,6 +211,9 @@ function process(request, response) {
                 return file_not_found();
             }
             if (stats.isDirectory()) {
+                if ( filePath.charAt(filePath.length - 1) != '/' ) {
+                    filePath = filePath + '/';
+                }
                 return list_directory(filePath, stats);
             } else {
                 if (!stats.isFile()) {

@@ -12,14 +12,31 @@
     <script src="zkide.js"></script>
     
     <script>
+    var controllers = {};
+    
     function start() {
         Apart.require(["ZKEditorKeyBindings", "ZKIDE"], function(keyBindings, ZKIDE) {
             ZKIDE.start();
         }); 
         
-        Apart.require(["ZKFileBrowser"], function(fb) {
-            fb('/', document.getElementById("fileBrowser"));
+        Apart.require(["ZKFileBrowser"], function(ZKFileBrowser) {
+            var id = "fileBrowser";
+            var aDOMElement = document.getElementById(id);
+            var fb = new ZKFileBrowser('/', aDOMElement);            
+            aDOMElement.dataset.controllerID = id;
+            controllers[id] = fb;
         });
+        
+        window.getController = function(aDOMElement) {
+            var controller = null;
+            while (!controller && aDOMElement) {
+                if (aDOMElement.dataset.controllerID) {
+                    controller = controllers[aDOMElement.dataset.controllerID];
+                }
+                aDOMElement = aDOMElement.parentNode;
+            } 
+            return controller;
+        }
     }
     </script>
     <title>ZKIDE</title>

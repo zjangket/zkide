@@ -1,18 +1,13 @@
-<html>
-<head>
-    <title>ZKFileBrowser template</title>
-</head>
-<body>
-<section id='fileBrowserSection' contextMenu='fileBrowserContextMenu'>
-    <menu type='context' id='fileBrowserContextMenu'>
-        <menuitem label="Add file" onclick="addFileClicked(this)" icon="/client/plus.png"></menuitem>
+<div id='fileBrowserDiv' contextMenu='fileBrowserContextMenu'>
+    <menu type='context' id='fileBrowserContextMenu' oncontextmenu='alert(event.target)'>
+        <menuitem label="Add file" onclick="getController(this).addFileClicked(event, this)" icon="/client/plus.png"></menuitem>
     </menu>
-    <div id='fileBrowserDiv'>
-      <ul id='fileBrowserUl'>
-           <li id='directoryTemplate' class='directory unselectable '><span></span></li>
-           <li id="fileTemplate" class='file unselectable '><span></span></li>
-      </ul>
-    </div>
-</section>
-</body>
-</html>
+    <ul id='unorderedListTemplate'>
+       <li id='directoryTemplate' class='directory'><a href='{{url}}' class='unselectable ' 
+                onclick='getController(this).directoryClicked(event, this)'
+                ondblclick='getController(this).directoryDblClicked(event, this)'>{{name}}</a></li>
+       <li id="fileTemplate" class='file '><a href='{{url}}' class='unselectable ' 
+                onclick='getController(this).fileClicked(event, this)'
+                ondblclick='getController(this).fileDblClicked(event, this)'>{{name}}</a></li>
+    </ul>
+</div>
