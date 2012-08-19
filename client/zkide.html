@@ -37,6 +37,10 @@
             } 
             return controller;
         }
+        
+        window.oncontextmenu = function (anEvent) {
+            window.lastContextMenuTarget = anEvent.target;
+        }
     }
     </script>
     <title>ZKIDE</title>

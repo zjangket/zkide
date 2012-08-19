@@ -14,17 +14,34 @@ Apart.define('ZKFileBrowser', ['raw@ZKFileBrowser.html', 'ZKIDE', 'fileStore', '
         
         ZKFileBrowser.prototype.constructor = ZKFileBrowser;
         
-        ZKFileBrowser.prototype.addFileClicked =  function addFileClicked(anEvent, anHTMLElement) {
+        function promptForPath(anHTMLElement, aString) {
             var currentElement = anHTMLElement;
-            var defaultValue = null;
-            while ( defaultValue == null && currentElement != null ) {
+            var defaultValue = '';
+            while ( defaultValue.length == 0 && currentElement != null ) {
                 if ( currentElement instanceof HTMLAnchorElement) {
-                    defaultValue = currentElement.href;
+                    defaultValue = currentElement.pathname;
                 }
                 currentElement = currentElement.parentNode;
             }
-            var pathToCreate = anHTMLElement.ownerDocument.defaultView.prompt(
-                'Enter the path to create', defaultValue);
+            return anHTMLElement.ownerDocument.defaultView.prompt(aString, defaultValue);
+        }
+        
+        ZKFileBrowser.prototype.addClicked =  function addFileClicked(anEvent, anHTMLElement) {
+            var pathToCreate = promptForPath( anHTMLElement,  'Enter the path to create');
+            if (pathToCreate != null) {
+                fileStore.save(pathToCreate, null, function(xhr) {
+                        anHTMLElement.ownerDocument.defaultView.alert('Result: ' + xhr);
+                });
+            }
+        };
+        
+        ZKFileBrowser.prototype.deleteClicked =  function addFileClicked(anEvent, anHTMLElement) {            
+            var pathToDelete = promptForPath( anHTMLElement,  'Enter the path to delete');
+            if (pathToCreate != null) {
+                fileStore.del(pathToDelete, function(xhr) {
+                        anHTMLElement.ownerDocument.defaultView.alert('Result: ' + xhr);
+                });
+            }
         };
         
         ZKFileBrowser.prototype.directoryClicked = function (anEvent, anHTMLElement) {

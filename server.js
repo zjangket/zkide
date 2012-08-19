@@ -5,7 +5,6 @@ var uri = require('url');
 var util = require('util');
 var mime = require('./mime');
 var async = require('./server/async.min.js');
-var repl = require("repl");
 
 var defaults = {
     port: 9090
@@ -126,7 +125,7 @@ function process(request, response) {
             //TODO: do something with error
             fs.readdir(filePath, function(error, fileArray) {
                 async.forEach(fileArray, function(x, callback) {
-                    var newPath = filePath+ x;
+                    var newPath = path.normalize(filePath+ x);
                     var isDirectory = false;
                      fs.stat(newPath, function (err, stats) {
                         if (err) {
@@ -144,7 +143,7 @@ function process(request, response) {
                         }
                     listing.push( 
                         {"name": x,
-                            "url": '/' + newPath,
+                            "url": ('/' + newPath.replace(/(\\\\|\\)/g, '/')),
                         "isDirectory": isDirectory});
                      callback();
                      });
@@ -228,5 +227,4 @@ function process(request, response) {
   
 var server = http.createServer(process);
 server.listen(defaults.port);
-repl.start();
 
