@@ -63,7 +63,7 @@ Apart.define('ZKFileBrowser', ['raw@ZKFileBrowser.html', 'ZKIDE', 'fileStore', '
         };
         
         ZKFileBrowser.prototype.fileDblClicked = function (anEvent, anHTMLAnchorElement) {
-            new ZKEditor(anHTMLAnchorElement.href);
+            new ZKEditor(anHTMLAnchorElement.pathname);
             anEvent.stopPropagation();
             anEvent.preventDefault();
         };
