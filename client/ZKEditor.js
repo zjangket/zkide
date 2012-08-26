@@ -6,6 +6,10 @@ Apart.define("ZKEditor", ['ZKIDE', 'fileStore'], function(ZKIDE, fileStore) {
         };
         
         function ZKEditor(path) {
+          this.init(path);
+        };
+  
+        ZKEditor.prototype.init = function init(aFileStoreRelativePath) {
             ZKIDE.editorOpened(this);
             function initializeCodeMirrorEditor(zkeditor, domId) {
                 var domElement = zkeditor.browserWindow.document.getElementById(domId);            
@@ -14,7 +18,7 @@ Apart.define("ZKEditor", ['ZKIDE', 'fileStore'], function(ZKIDE, fileStore) {
                 zkeditor.codeMirrorEditor = editor;
             }
             
-            this.url = path;
+            this.url = aFileStoreRelativePath;
             this.browserWindow = window.open('./zkeditor.html');
             this.codeMirrorEditor = null;
             var self = this;
@@ -28,8 +32,9 @@ Apart.define("ZKEditor", ['ZKIDE', 'fileStore'], function(ZKIDE, fileStore) {
                             }
                             self.codeMirrorEditor.setValue(fileContent);
                     });
-                }     
-            }       
+                }
+            }
+
         };
         
         ZKEditor.prototype.getContent = function getContent() {

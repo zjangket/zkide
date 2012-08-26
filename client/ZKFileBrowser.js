@@ -37,7 +37,7 @@ Apart.define('ZKFileBrowser', ['raw@ZKFileBrowser.html', 'ZKIDE', 'fileStore', '
         
         ZKFileBrowser.prototype.deleteClicked =  function addFileClicked(anEvent, anHTMLElement) {            
             var pathToDelete = promptForPath( anHTMLElement,  'Enter the path to delete');
-            if (pathToCreate != null) {
+            if (pathToDelete != null) {
                 fileStore.del(pathToDelete, function(xhr) {
                         anHTMLElement.ownerDocument.defaultView.alert('Result: ' + xhr);
                 });
