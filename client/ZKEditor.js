@@ -2,6 +2,7 @@ Apart.define("ZKEditor", ['ZKIDE', 'fileStore'], function(ZKIDE, fileStore) {
         
         var codeMirrorConfiguration= {
             lineNumbers: true,
+          matchBrackets: true,
             keyMap: "zkide"
         };
         
@@ -19,7 +20,7 @@ Apart.define("ZKEditor", ['ZKIDE', 'fileStore'], function(ZKIDE, fileStore) {
             }
             
             this.url = aFileStoreRelativePath;
-            this.browserWindow = window.open('./zkeditor.html');
+            this.browserWindow = ZKIDE.openInNewWindow('./zkeditor.html');
             this.codeMirrorEditor = null;
             var self = this;
             this.browserWindow.onload = function() {

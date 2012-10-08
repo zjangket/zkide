@@ -3,9 +3,15 @@ Apart.define("ZKIDE", function() {
     var console;
     var editors = [];
     var fileBrowsers = [];
+  	var mainWindow;
     
-    ZKIDE.start = function start() {
+    ZKIDE.start = function start(aWindow) {
+        mainWindow = aWindow;
 	};
+  
+    ZKIDE.openInNewWindow = function () {
+        return mainWindow.open.apply(null, arguments);
+    };
 	
 	ZKIDE.fileBrowserOpened = function (browser) {
 	    fileBrowsers.push(browser);

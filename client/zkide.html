@@ -18,7 +18,7 @@
     
     function start() {
         Apart.require(["ZKEditorKeyBindings", "ZKIDE"], function(keyBindings, ZKIDE) {
-            ZKIDE.start();
+            ZKIDE.start(window);
         }); 
         
         Apart.require(["ZKFileBrowser"], function(ZKFileBrowser) {
