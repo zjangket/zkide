@@ -16,6 +16,7 @@ changed CodeMirror-scroll to full screen like
 http://codemirror.net/demo/fullscreen.html
 */
 .CodeMirror-scroll {
+    overflow: hidden;
     display: block;
     position: absolute;
     top: 0;
@@ -66,9 +67,6 @@ http://codemirror.net/demo/fullscreen.html
   word-wrap: break-word;
   white-space: pre-wrap;
   word-break: normal;
-}
-.CodeMirror-wrap .CodeMirror-scroll {
-  overflow-x: hidden;
 }
 
 .CodeMirror textarea {

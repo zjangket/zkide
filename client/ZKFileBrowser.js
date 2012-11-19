@@ -15,16 +15,30 @@ Apart.define('ZKFileBrowser', ['raw@ZKFileBrowser.html', 'ZKIDE', 'fileStore', '
         ZKFileBrowser.prototype.constructor = ZKFileBrowser;
         
         function promptForPath(anHTMLElement, aString) {
-            var currentElement = anHTMLElement;
-            var defaultValue = '';
-            while ( defaultValue.length == 0 && currentElement != null ) {
-                if ( currentElement instanceof HTMLAnchorElement) {
-                    defaultValue = currentElement.pathname;
-                }
-                currentElement = currentElement.parentNode;
-            }
+          	var anchor = findParentAnchorElement(anHTMLElement);
+          	var defaultValue = anchor != null ? anchor.pathname : '';          	
             return anHTMLElement.ownerDocument.defaultView.prompt(aString, defaultValue);
         }
+  
+  		function findParentElementOfType(anElementType, anHTMLElement) {
+            var currentElement = anHTMLElement;
+            while ( currentElement != null ) {
+                if ( currentElement instanceof anElementType) {
+                    return currentElement;
+                }
+            }
+          	return null;
+  		}
+  
+  		function findParentAnchorElement(anElement) {
+    		return findParentElementOfType(HTMLAnchorElement, anElement);
+  		}
+        
+        ZKFileBrowser.prototype.openClicked =  function addFileClicked(anEvent, anHTMLElement) {
+          	var anchor = findParentAnchorElement(anHTMLElement);
+         	if (anchor == null) {return anHTMLElement.ownerDocument.alert('Error: where is the anchor to open?');}
+          	anHTMLElement.ownerDocument.defaultView.open(anchor.href);
+        };
         
         ZKFileBrowser.prototype.addClicked =  function addFileClicked(anEvent, anHTMLElement) {
             var pathToCreate = promptForPath( anHTMLElement,  'Enter the path to create');
@@ -122,7 +136,8 @@ Apart.define('ZKFileBrowser', ['raw@ZKFileBrowser.html', 'ZKIDE', 'fileStore', '
             var listNode = domElement.appendChild(ul);
             fileStore.getMetaData(path, function(error, dirContents)  {
                     //TODO: do something with error
-                    dirContents.forEach(function(dirElement) {
+              		
+                    (dirContents.sort(dirElementComparator)).forEach(function(dirElement) {
                             var template = dirElement.isDirectory ? templates.directoryTemplate : templates.fileTemplate;
                             var data = {
                                         name: dirElement.name,
@@ -135,6 +150,12 @@ Apart.define('ZKFileBrowser', ['raw@ZKFileBrowser.html', 'ZKIDE', 'fileStore', '
                             listNode.appendChild(frag);       
                     });
             });
+          
+          function dirElementComparator (a, b) {
+            if (a.isDirectory && !b.isDirectory) { return -1; }
+            if (b.isDirectory && !a.isDirectory) { return 1; }
+            return a.name.localeCompare(b.name);
+          }
 	};
         
         return ZKFileBrowser;
