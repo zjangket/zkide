@@ -1,8 +1,8 @@
 <div id='fileBrowserDiv' contextMenu='fileBrowserContextMenu'>
     <menu type='context' id='fileBrowserContextMenu' oncontextmenu='alert(event.target)'>
-      	<menuitem label="Open" onclick="getController(this).openClicked(event, window.lastContextMenuTarget)" icon="/client/delete.png"></menuitem>
-        <menuitem label="Add" onclick="getController(this).addClicked(event, window.lastContextMenuTarget)" icon="/client/plus.png"></menuitem>
-        <menuitem label="Delete" onclick="getController(this).deleteClicked(event, window.lastContextMenuTarget)" icon="/client/delete.png"></menuitem>
+      	<menuitem label="Open" onclick="getController(this).openClicked(event, window.lastContextMenuTarget)"></menuitem>
+      <menuitem label="Add" onclick="getController(this).addClicked(event, window.lastContextMenuTarget)" icon="./resources/plus.png"></menuitem>
+      <menuitem label="Delete" onclick="getController(this).deleteClicked(event, window.lastContextMenuTarget)" icon="./resources/delete.png"></menuitem>
     </menu>
     <ul id='unorderedListTemplate'>
        <li id='directoryTemplate' class='directory'><a href='{{url}}' class='unselectable ' 

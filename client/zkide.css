@@ -5,7 +5,7 @@ body {
 }
 
 .directory {
-  list-style-image: url(folder16.gif);
+  list-style-image: url(resources/folder16.gif);
 }
 
 .file {  

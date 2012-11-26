@@ -1,4 +1,4 @@
-Apart.define("ZKEditor", ['ZKIDE', 'fileStore'], function(ZKIDE, fileStore) {
+Apart.define("zkeditor/ZKEditor", ['ZKIDE', 'fileStore'], function(ZKIDE, fileStore) {
         
         var codeMirrorConfiguration= {
             lineNumbers: true,
@@ -20,7 +20,7 @@ Apart.define("ZKEditor", ['ZKIDE', 'fileStore'], function(ZKIDE, fileStore) {
             }
             
             this.url = aFileStoreRelativePath;
-            this.browserWindow = ZKIDE.openInNewWindow('./zkeditor.html');
+            this.browserWindow = ZKIDE.openInNewWindow('./zkeditor/zkeditor.html');
             this.codeMirrorEditor = null;
             var self = this;
             this.browserWindow.onload = function() {

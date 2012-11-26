@@ -1,4 +1,4 @@
-Apart.define('ZKFileBrowser', ['raw@ZKFileBrowser.html', 'ZKIDE', 'fileStore', 'ZKEditor'], function(template, ZKIDE, fileStore, ZKEditor) {
+Apart.define('zkfilebrowser/ZKFileBrowser', ['raw@zkfilebrowser/ZKFileBrowser.html', 'ZKIDE', 'fileStore', 'zkeditor/ZKEditor'], function(template, ZKIDE, fileStore, ZKEditor) {
         var templates = {loaded: false};
         
         function ZKFileBrowser(aPath, aDomElement) {
