@@ -1,60 +1,56 @@
-Apart.define("zkeditor/ZKEditor", ['ZKIDE', 'fileStore'], function(ZKIDE, fileStore) {
-        
-        var codeMirrorConfiguration= {
-            lineNumbers: true,
-          matchBrackets: true,
-            keyMap: "zkide"
-        };
-        
-        function ZKEditor(path) {
-          this.init(path);
-        };
+Apart.define("zkeditor/ZKEditor", ['ZKIDE'], function(ZKIDE) {
   
-        ZKEditor.prototype.init = function init(aFileStoreRelativePath) {
-            ZKIDE.editorOpened(this);
-            function initializeCodeMirrorEditor(zkeditor, domId) {
-                var domElement = zkeditor.browserWindow.document.getElementById(domId);            
-                var editor = CodeMirror.fromTextArea(domElement, codeMirrorConfiguration);
-                editor.zkeditor = zkeditor;
-                zkeditor.codeMirrorEditor = editor;
-            }
-            
-            this.url = aFileStoreRelativePath;
-            this.browserWindow = ZKIDE.openInNewWindow('./zkeditor/zkeditor.html');
-            this.codeMirrorEditor = null;
-            var self = this;
-            this.browserWindow.onload = function() {
-                initializeCodeMirrorEditor(self, "zkTextarea");         
-                if (self.url) {
-                    self.browserWindow.document.title = self.url;   
-                    fileStore.get(self.url, function (error, fileContent, metaData) {
-                            if (metaData && metaData.contentType) {
-                                self.codeMirrorEditor.setOption('mode', metaData.contentType);
-                            }
-                            self.codeMirrorEditor.setValue(fileContent);
-                    });
-                }
-            }
+    return Backbone.View.extend({
+        el: '#zkTextarea',
+      
+        codeMirrorConfiguration: {
+            lineNumbers: true,
+            matchBrackets: true,
+            keyMap: "zkide"
+        },
+      
+        codeMirrorEditor: null,
+      
+        browserWindow: null,
 
-        };
-        
-        ZKEditor.prototype.getContent = function getContent() {
-            return this.codeMirrorEditor.getValue();
-        };
-        
-        ZKEditor.prototype.getURL = function getURL() {
-            return this.url;
-        };
-        
-        ZKEditor.prototype.save = function save() {
-            if (!this.url) {
-               askUrl();
-            }
+        initialize: function (options) {
+          	this.url = options.url;
+            ZKIDE.editorOpened(this);
+            this.browserWindow = ZKIDE.openInNewWindow('./zkeditor/zkeditor.html');
             var self = this;
-            fileStore.save(this.url, this.getContent(), function() {
-                    self.browserWindow.alert('file saved');
-            });
-        };
-        
-        return ZKEditor;
+            if (self.model) {
+                var _ = window._;
+                self.model.fetch({
+                    success: function () {
+                        if (this.codeMirrorEditor != null) {
+                          this.copyModelStateToCodeMirrorEditor();
+                        } else {
+                            window.setTimeout(_.bind(self.copyModelStateToCodeMirrorEditor, self), 500);
+                        }
+                    }
+                });
+            }
+            this.browserWindow.onload = function() {
+                self.browserWindow.document.title = self.model.get('name');
+                var domElement = self.browserWindow.document.getElementById("zkTextarea");            
+                var editor = CodeMirror.fromTextArea(domElement, self.codeMirrorConfiguration);
+                editor.zkeditor = self;
+                self.codeMirrorEditor = editor;                
+            }
+        },
+      
+        getCodeMirrorContent: function () {
+            return this.codeMirrorEditor.getValue();
+        },
+      
+        copyModelStateToCodeMirrorEditor: function () {
+            this.codeMirrorEditor.setOption('mode', this.model.get('contentType'));
+            this.codeMirrorEditor.setValue(this.model.get('content'))
+        },
+      
+        save: function () {
+            this.model.set('content', this.getCodeMirrorContent());
+            this.model.save();
+        }
+    });
 });

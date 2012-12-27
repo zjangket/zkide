@@ -1,5 +1,20 @@
+@font-face {
+	font-family: cool_font;
+	src: url('resources/font/SourceCodePro-Regular.ttf');
+}
+
+.classForLoadingFont {
+  font-family: Source Code Pro, Droid Sans, Arial, sans-serif;
+}
+
+html, body {
+  height: 100%;
+  padding: 0px;
+  margin: 0px;
+}
+
 body {
-  font-family: Droid Sans, Arial, sans-serif;
+  font-family: Source Code Pro, Droid Sans, Arial, sans-serif;
   font-size: medium;
   color:  #202040;
 }
@@ -8,19 +23,9 @@ body {
   list-style-image: url(resources/folder16.gif);
 }
 
-.file {  
+.file {
   list-style-type: none;
-  list-style-image: none;   
-}
-
-.unselectable    {
-    -webkit-user-select: none; /* webkit (safari, chrome) browsers */
-    -moz-user-select: none;  /* mozilla browsers */
-    -khtml-user-select: none;  /* webkit (konqueror) browsers */
-}
-
-.selected {
-    background-color: #E0F0F0;
+  list-style-image: none;
 }
 
 button {
@@ -34,7 +39,65 @@ button {
     vertical-align: middle; /* align the text vertically centered */
 }
 
-#fileBrowserDiv a {
+#fileBrowser {
+    min-width: 200px;
+    display: inline-block;
+}
+
+.directoryEntryView {
+    -webkit-user-select: none; /* webkit (safari, chrome) browsers */
+    -moz-user-select: none;  /* mozilla browsers */
+    -khtml-user-select: none;  /* webkit (konqueror) browsers */
+	width: 100%;
+    margin-right: 16px; /* for the chevron icon */
+}
+
+.directoryEntryView a {
 	text-decoration: none;
 	color: #202040;
 }
+
+.directoryEntryView img {
+    float: right;
+    cursor: pointer;
+  	display: none;
+}
+
+.directoryEntryView:hover {
+    background-color: #F0F0F0; 
+}
+
+.directoryEntryView:hover.hasPopUpMenu {
+     background-color: #E1E1E1;
+}
+  
+.directoryEntryView:hover img {
+    display: block;
+}
+
+.directoryEntryView.hasPopUpMenu img {
+    display: block;
+}
+
+/* menu */
+.popUpMenu {
+    background-color: #E1E1E1;
+    border: 2px solid #F0F0F0;
+    display: inline-block;
+    z-index: 10;
+  	padding: 10px
+}
+
+.popUpMenu button{
+    background-color: #FFFFFF;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -khtml-border-radius: 5px;
+    border-radius: 5px;
+}
+
+.hasPopUpMenu {
+    background-color: #E1E1E1;
+    //border: 2px solid #4D7FAC;
+}
+

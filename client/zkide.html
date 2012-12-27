@@ -1,60 +1,45 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <link rel="stylesheet" type="text/css" href="zkide.css"/>
-    <link rel="stylesheet" type="text/css" href="lib/codemirror/codemirror.css"/>
+<html>    
+    <head>
+        <link rel="stylesheet" type="text/css" href="zkide.css" />
+        <link rel="stylesheet" type="text/css" href="lib/codemirror/codemirror.css" />
+        <script src="lib/codemirror/codemirror_patched.js"></script>
+        <script src='lib/codemirror/mode/javascript.js'></script>
+        <script src='lib/codemirror/mode/css.js'></script>
+        <script src='lib/codemirror/mode/xml.js'></script>
+        <script src='lib/codemirror/mode/htmlmixed.js'></script>
+        <script src="lib/underscore.js"></script>
+        <script src="lib/zepto.js"></script>
+        <script src="lib/backbone.js"></script>
+        <script src="lib/apart.js"></script>
+        <script>
+            function start() {
+                Apart.require(['zkeditor/ZKEditorKeyBindings', 'ZKIDE'], function (keyBindings, ZKIDE) {
+                    ZKIDE.start(window);
+                });
+
+                Apart.require(['model/model', 'zkfilebrowser/FBView'], function (model, view) {
+                    var rootDir = new model.ZKDirectory();
+                    rootDir.fetchEntries({
+                        success: function() {
+                            new view.FBFileBrowserView({rootDir: rootDir});
+                        }
+                    });
+                });
+            }
+        </script>
+        <title>ZKIDE</title>
+    </head>
     
-  <script src="lib/codemirror/codemirror_patched.js"></script>
-  <script src='lib/codemirror/mode/javascript.js'></script>
-     <script src='lib/codemirror/mode/css.js'></script>
-     <script src='lib/codemirror/mode/xml.js'></script>
-     <script src='lib/codemirror/mode/htmlmixed.js'></script>
-      <script src="lib/underscore.js"></script>
-      <script src="lib/zepto.js"></script>
-      <script src="lib/backbone.js"></script>
-  <script src="lib/apart.js"></script>
-    
-    <script>
-    var controllers = {};
-    
-    function start() {
-      Apart.require(["zkeditor/ZKEditorKeyBindings", "ZKIDE"], function(keyBindings, ZKIDE) {
-            ZKIDE.start(window);
-        }); 
-        
-      Apart.require(["zkfilebrowser/ZKFileBrowser2"], function(ZKFileBrowser) {
-        new ZKFileBrowser()
-      });
-        
-        
-        /*     var id = "fileBrowser";
-            var aDOMElement = document.getElementById(id);
-            var fb = new ZKFileBrowser('/', aDOMElement);            
-            aDOMElement.dataset.controllerID = id;
-            controllers[id] = fb;
-        });
-        
-        window.getController = function(aDOMElement) {
-            var controller = null;
-            while (!controller && aDOMElement) {
-                if (aDOMElement.dataset.controllerID) {
-                    controller = controllers[aDOMElement.dataset.controllerID];
-                }
-                aDOMElement = aDOMElement.parentNode;
-            } 
-            return controller;
-        }
-        
-        window.oncontextmenu = function (anEvent) {
-            window.lastContextMenuTarget = anEvent.target;
-        } */
-    }
-    </script>
-    <title>ZKIDE</title>
-</head>
-<body onload="start()">
-  	<div id="menu"><div>
-    <script type="text/html" id="template-fileBrowser">Hello <%= test %></script>
-    <div id="fileBrowser"></div>
-</body>
+    <body onload="start()">
+        <div id="fileBrowser">
+            <script type="text/html" id="template-FBDirectoryEntryView">
+                <div class="directoryEntryView">
+                    <a href="<%= url %>" class="unselectable"><%= name %></a>
+                    <img src="resources/chevron-small-expand.png" width="16" height="16" alt="expand menu" />
+                </div>
+            </script>
+        </div>
+    </body>
+
 </html>
