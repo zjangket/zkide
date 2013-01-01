@@ -1,5 +1,6 @@
 Apart.define('model/model', function () {
     var model = {};
+  
     model.ZKDirectoryEntry = Backbone.Model.extend({
     	defaults: {name: null}
     });
@@ -92,5 +93,6 @@ Apart.define('model/model', function () {
             return file;
         }
     });
+  
     return model;
 });

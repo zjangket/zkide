@@ -6,7 +6,8 @@ Apart.define("zkeditor/ZKEditor", ['ZKIDE'], function(ZKIDE) {
         codeMirrorConfiguration: {
             lineNumbers: true,
             matchBrackets: true,
-            keyMap: "zkide"
+            keyMap: "zkide",
+            onGutterClick: CodeMirror.newFoldFunction(CodeMirror.braceRangeFinder)
         },
       
         codeMirrorEditor: null,
@@ -18,24 +19,18 @@ Apart.define("zkeditor/ZKEditor", ['ZKIDE'], function(ZKIDE) {
             ZKIDE.editorOpened(this);
             this.browserWindow = ZKIDE.openInNewWindow('./zkeditor/zkeditor.html');
             var self = this;
-            if (self.model) {
-                var _ = window._;
-                self.model.fetch({
-                    success: function () {
-                        if (this.codeMirrorEditor != null) {
-                          this.copyModelStateToCodeMirrorEditor();
-                        } else {
-                            window.setTimeout(_.bind(self.copyModelStateToCodeMirrorEditor, self), 500);
-                        }
-                    }
-                });
-            }
+            var thisCopyModelStateToCodeMirrorEditor = _.bind(this.copyModelStateToCodeMirrorEditor, self);
+            this.model.fetch({
+                success: thisCopyModelStateToCodeMirrorEditor
+            });
             this.browserWindow.onload = function() {
                 self.browserWindow.document.title = self.model.get('name');
                 var domElement = self.browserWindow.document.getElementById("zkTextarea");            
                 var editor = CodeMirror.fromTextArea(domElement, self.codeMirrorConfiguration);
+              	//editor.setOption('onGutterClick', CodeMirror.newFoldFunction(CodeMirror.indentRangeFinder));
                 editor.zkeditor = self;
-                self.codeMirrorEditor = editor;                
+                self.codeMirrorEditor = editor;
+                thisCopyModelStateToCodeMirrorEditor();
             }
         },
       
@@ -44,8 +39,17 @@ Apart.define("zkeditor/ZKEditor", ['ZKIDE'], function(ZKIDE) {
         },
       
         copyModelStateToCodeMirrorEditor: function () {
-            this.codeMirrorEditor.setOption('mode', this.model.get('contentType'));
-            this.codeMirrorEditor.setValue(this.model.get('content'))
+            if (this.codeMirrorEditor != null &&
+               		this.model.get('content') !== undefined) {
+                this.codeMirrorEditor.setOption('mode', this.model.get('contentType'));
+                this.codeMirrorEditor.setValue(this.model.get('content'));
+                this.foldToOneLevel();
+            }
+        },
+      
+        foldToOneLevel: function () {
+            var lineCount = this.codeMirrorEditor.lineCount();
+          	var currentLine = 0;
         },
       
         save: function () {
