@@ -23,7 +23,7 @@
                     var rootDir = new model.ZKDirectory();
                     rootDir.fetchEntries({
                         success: function() {
-                            new view.FBFileBrowserView({rootDir: rootDir});
+                            window.fileBrowserView = new view.FBFileBrowserView({rootDir: rootDir});
                         }
                     });
                 });

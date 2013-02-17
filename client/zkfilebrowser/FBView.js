@@ -16,6 +16,7 @@ Apart.define('zkfilebrowser/FBView',
                 throw new Error('Needs to be constructed with a model.ZKDirectory rootDir attribute');
             }
             this.rootDirView = new view.FBDirectoryView({model: options.rootDir});
+          	this.rootDirView.setFileBrowserView(this);
             this.render();
         },
         
@@ -29,11 +30,17 @@ Apart.define('zkfilebrowser/FBView',
         tagName: 'ul',
         
         entryViews: null,
+      
+      	fileBrowserView: null,
 
         initialize: function () {
             this.entryViews = [];
             this.model.getEntries().bind('add', _.bind(this.addViewForEntry, this));
             this.model.getEntries().bind('remove', _.bind(this.rerender, this));
+        },
+      
+        setFileBrowserView: function (view) {
+            this.fileBrowserView = view
         },
 
         render: function () {
@@ -52,7 +59,8 @@ Apart.define('zkfilebrowser/FBView',
         addViewForEntry: function (aDirectoryEntry) {
           	var constructor = aDirectoryEntry.isDirectory() ?
                     view.FBDirectoryDirectoryEntryView : view.FBFileDirectoryEntryView;
-            var entryView = new constructor({model: aDirectoryEntry});
+            var entryView = new constructor({model: aDirectoryEntry});            
+            entryView.setFileBrowserView(this.fileBrowserView);
             this.entryViews.push(entryView);
             this.$el.append(entryView.$el);
             entryView.render(); 
@@ -65,6 +73,8 @@ Apart.define('zkfilebrowser/FBView',
         tagName: 'li',
       
         menuView: null,
+      
+      	fileBrowserView: null,
 
         render: function () {
             var html = this.template({
@@ -72,6 +82,10 @@ Apart.define('zkfilebrowser/FBView',
                 url: this.model.url()
             });
             this.$el.html(html);
+        },
+      
+        setFileBrowserView: function (view) {
+            this.fileBrowserView = view
         },
         
         stopEventCompletely: function (event) {
@@ -129,9 +143,11 @@ Apart.define('zkfilebrowser/FBView',
             } else {
                 this.model.fetchEntries({
                     success: function() {
-                        self.directoryView = new view.FBDirectoryView({model: self.model});
+                        self.directoryView = new view.FBDirectoryView({model: self.model});                                 
+                        self.directoryView.setFileBrowserView(this.fileBrowserView);
                         self.$el.append(self.directoryView.$el);
                         self.directoryView.render();
+                        self.fileBrowserView.trigger('FBFileBrowser.directoryListed', self);
                     }
                 });
             }

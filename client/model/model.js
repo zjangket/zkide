@@ -14,7 +14,7 @@ Apart.define('model/model', function () {
             return x.get('name').localeCompare(y.get('name'));
         },
     	
-    	parse: function (response, xhr) {
+    	parse: function (response, options) {
           	return _.map(response, function(x) {
                 return new (x.isDirectory ? model.ZKDirectory : model.ZKFile)(x)
             });
@@ -41,11 +41,11 @@ Apart.define('model/model', function () {
             Backbone.Model.prototype.fetch.call(this, newOptions);
         },
         
-        parse: function (response, xhr) {
+        parse: function (response, options) {
           	return {
               name: this.get('name'), //the name of a file is immutable and part of it's URL
-              contentType: xhr.getResponseHeader('content-type'),
-              content: xhr.responseText
+              contentType: options.xhr.getResponseHeader('content-type'),
+              content: options.xhr.responseText
             }
         },
         
